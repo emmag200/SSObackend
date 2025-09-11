@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import smtplib
+import socket
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
@@ -141,6 +142,11 @@ This report was generated on {datetime.now().strftime('%d/%m/%Y at %I:%M %p')} u
         pdf_attachment.add_header('Content-Disposition', 'attachment', filename=pdf_filename)
         msg.attach(pdf_attachment)
 
+        original_getaddrinfo = socket.getaddrinfo
+        def ipv4_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
+            return original_getaddrinfo(host, port, socket.AF_INET, type, proto, flags)
+        socket.getaddrinfo = ipv4_getaddrinfo
+        
         # Send email
         server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
         server.starttls()
