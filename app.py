@@ -9,7 +9,7 @@ import base64
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app)  # This allows your Netlify site to make requests to this backend
+CORS(app, origins=["*"])  # allows Netlify site to make requests to this backend
 
 # Email configuration - these will be set as environment variables
 SMTP_SERVER = "smtp.gmail.com"
